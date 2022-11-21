@@ -1,0 +1,4 @@
+allennlp==2.9.2
+tqdm
+git+https://github.com/openai/CLIP.git
+git+https://github.com/salaniz/pycocoevalcap
