@@ -5,6 +5,8 @@ This project trains models on pure-text data and then shows they can applied to 
 with visual inputs instead of text, thus demonstrating zero-shot cross-modal transfer.
 This is done by using the shared semantic embedding space of contrastive vision and language models.
 
+More details can be found on our [webpage](https://prior.allenai.org/projects/close).
+
 ## Installation
 Install [pytorch](https://pytorch.org/), we have tested this code with torch 1.10.1 and 1.11.0
 Then install the other requirements with:
