@@ -104,65 +104,6 @@ I walked past a fire hydrant with grass grown around it on a curb side.
     
 """.format(coco_caption)
 
-def generate_romantic_prompt(prompt):
-    return """Generate a romantic caption from the prompt:
-
-dog, leash, water, run:
-White dog with leash running through water chasing his dreams.
-
-man, horse, road, ride:
-A man in blue is riding a horse on a dirt road galloping towards his freedom.
-
-girl, water fountain:
-Five little girls are playing in a water fountain celebrating their friendship.
-
-man, pole, smile:
-A man sits with his foot on a pole and smiles as he looks at his love.
-
-boy, dog, object, watch:
-A boy and his dog are mesmerized watching a beautiful object in the water.
-
-man, mountain, stand:
-A man is standing on rocks looking towards the mountains contemplating his life.
-
-girl, dress, water balloon, carry:
-A pretty girl wearing colorful dress is going towards home carrying water balloons.
-
-woman, pharaoh:
-Woman wears an egytian-like headdress , embracing an extinct culture of pharaohs.
-
-baby, life vest, swim:
-A happy baby wears an orange life vest is going to learn swimming.
-
-boy, girl, hug:
-A girl and a boy hugging on a bridge like soulmates.
-
-boy, girl, telescope:
-A little boy plays with a telescope in a park while a little girl watches with stars in her eyes at the clever genius of the boy.
-
-adult, child, fish:
-An adult and a child on bleachers near the water share love of fishing.
-
-breakfast, woman:
-A beautiful woman is eating breakfast at a table by the water with a great view.
-
-head, covering, crowd:
-Many individuals with coverings on their heads crowded together are faithful and reverent.
-
-life, shoot, water:
-People living life to the fullest are splashed by water coming downs shoot.
-
-child, wall, stand:
-Two children standing on a wall excited for their next adventure.
-
-dog, beach, sunset:
-The dog walks along a beach at sunset , ending a day with friends.
-
-beauty, meadow:
-A bevy of young beauties sunbathing and relaxing in a sunny meadow.
-
-{}:""".format(prompt)
-
 def generate_harry_potter_prompt(prompt):
     return """Generate captions in imaginary-scenes using characters in Harry Potter, from prompt:
 
