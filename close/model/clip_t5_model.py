@@ -15,6 +15,7 @@ from transformers.modeling_outputs import Seq2SeqLMOutput
 
 from close.data.coco_captioning import CaptioningExample
 from close.data.visual_entailment import VisualEntailmentExample
+from l2v.data.visual_news import VisualNewsExample
 from close.data.vqa_v2 import VqaExample
 from close.model.layers import Layer
 from close.model.model import Model, ExampleOutput, BeamSearchSpec
@@ -246,6 +247,19 @@ class ClipT5Model(Model):
       else:
         out = [TrainingExample(ex.image_id, target_text, ex.question, x, example_id=ex.example_id)
                for x in ex.image_text]
+        
+    elif isinstance(ex, VisualNewsExample):
+      extract_i = (self.train_on_l in {"never", "both"} or
+                   (self.train_on_l in {"optional", "skip-lang"} and ex.image_id is not None))
+
+      out = [
+        TrainingExample(
+          example_id=ex.example_id,
+          image_id=ex.image_id if extract_i else None, 
+          input_text=ex.article,
+          image_text=ex.caption,
+          target_text=[ex.caption])
+      ]
     else:
       raise NotImplementedError()
 
@@ -274,6 +288,12 @@ class ClipT5Model(Model):
       return TrainingExample(example_id=example.example_id, image_id=example.image_id,
                              input_text=example.hypothesis,
                              target_text=None, image_text=example.premise)
+    elif isinstance(example, VisualNewsExample):
+      return TrainingExample(example_id=example.example_id,
+                             image_id=example.image_id,
+                             input_text=example.article,
+                             image_text=example.caption,
+                             target_text=None)
     else:
       raise NotImplementedError()
 
