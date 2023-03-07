@@ -48,5 +48,9 @@ def get_adapter(args):
     return CovNoise("cc3m-cov-v1", args.noise)
   elif args.l_adapter == "noise":
     return AddGuassianNoise(args.noise, renormalize=True)
+  elif args.l_adapter == "vis-news-shift":
+    l_adapter = CovNoise("kp-restval", args.noise, cov=False)
+  elif args.l_adapter == "vis-news-cov":
+    l_adapter = CovNoise("kp-restval", args.noise)
   elif args.l_adapter is None:
     raise NotImplementedError()
