@@ -5,12 +5,18 @@ import torch
 from allennlp.common import Params
 from torch.distributions import multivariate_normal
 
-from close import file_paths
-from close.model.layers import Layer
-from close.utils.py_utils import load_json_object
+from l2v import file_paths
+from l2v.model.layers import Layer
+from l2v.utils.py_utils import load_json_object
 import numpy as np
 
-from close.utils.pytorch_utils import replace_parameters
+from l2v.utils.pytorch_utils import replace_parameters
+
+
+@Layer.register("normalize")
+class Normalize(Layer):
+  def forward(self, x):
+    return x / x.norm(dim=-1, keepdim=True)
 
 
 @Layer.register("add-guassian-noise")
@@ -36,7 +42,8 @@ class Shift(Layer):
     self.src = src
     self.noise = noise
     self.scale = scale
-    with open(join(file_paths.ADAPTER_SOURCE, f"{self.src}.pkl"), "rb") as f:
+    src = join(file_paths.DATA_DIR, "clip-stats")
+    with open(join(src, f"{self.src}.pkl"), "rb") as f:
       shift = pickle.load(f)
     self.register_buffer("_shift", torch.as_tensor(shift*scale, dtype=torch.float), persistent=False)
 
@@ -63,8 +70,7 @@ class FixedRandomShift(Layer):
     self.dim = dim
     shift = np.random.randn(dim)
     shift = scale * shift / np.linalg.norm(shift)
-    self.register_buffer("shift", torch.as_tensor(
-      shift, dtype=torch.float, device=torch.device("cuda")), persistent=False)
+    self.register_buffer("shift", torch.as_tensor(shift, dtype=torch.float, device=torch.device("cuda")), persistent=False)
 
   def forward(self, x):
     x = x + self.shift
@@ -85,7 +91,7 @@ class CovNoise(Layer):
     self.cov = cov
     self.shift = shift
     self.scale = scale
-    src = file_paths.ADAPTER_SOURCE
+    src = join(file_paths.DATA_DIR, "clip-stats")
     if self.shift:
       with open(join(src, f"{self.src}-mean-diff.pkl"), "rb") as f:
         shift = pickle.load(f)
@@ -103,13 +109,10 @@ class CovNoise(Layer):
           x = x + torch.unsqueeze(self._shift, 0)
         dist = multivariate_normal.MultivariateNormal(
           loc=torch.zeros(x.shape[1], device=device), covariance_matrix=self._cov)
-        x = x + dist.sample(x.shape[:1])*self.scale
+        x = x + dist.sample(x.shape[:1])*3
       else:
         x = x + self._shift
-        x = x + torch.randn_like(x)*self.scale
-      x = x / x.norm(dim=-1, keepdim=True)
-    elif self.shift:
-      x = x + self._shift
+      x = x + torch.randn_like(x)*self.scale
       x = x / x.norm(dim=-1, keepdim=True)
     return x
 
@@ -121,7 +124,8 @@ class LinearAdapter(Layer):
     self.renorm = renorm
     self.src = src
     self.noise = noise
-    with open(join(file_paths.ADAPTER_SOURCE, f"{self.src}.pkl"), "rb") as f:
+    src = join(file_paths.DATA_DIR, "adapters")
+    with open(join(src, f"{self.src}.pkl"), "rb") as f:
       coef, bias = pickle.load(f)
     self.register_buffer("coef", torch.as_tensor(coef, dtype=torch.float), persistent=False)
     self.register_buffer("bias", torch.as_tensor(bias, dtype=torch.float), persistent=False)
@@ -134,3 +138,40 @@ class LinearAdapter(Layer):
       x = x + torch.randn_like(x)*self.noise
       x = x / x.norm(dim=-1, keepdim=True)
     return x
+
+
+@Layer.register("coco-cap-mean-diff")
+class CocoCapMeanDiff(Layer):
+  def __init__(self):
+    super().__init__()
+    with open(file_paths.COCO_CAP_MEAN_DIFF, "rb") as f:
+      data = pickle.load(f)
+    self.register_buffer("shift", torch.as_tensor(data), persistent=False)
+
+  def forward(self, x):
+    return x - self.shift
+
+
+@Layer.register("trained-adapter")
+class TrainedAdapter(Layer):
+  def __init__(self, src, noise=None):
+    super().__init__()
+    self.src = src
+    self.noise = noise
+    self.adapter = load_adapter(src)
+    replace_parameters(self.adapter, False)
+
+  def forward(self, x):
+    out = self.adapter(x)
+    if self.noise:
+      out = torch.randn_like(out)*self.gnoise
+    return out
+
+
+def load_adapter(src):
+  state = torch.load(join(src, "best-state.pth"))
+  model = load_json_object(join(dirname(src), "model.json"))
+  model = Layer.from_params(Params(model["aligner"]))
+  state = {k.split(".", 1)[1]: v for k, v in state.items() if k.startswith("aligner.")}
+  model.load_state_dict(state)
+  return model
