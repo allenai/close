@@ -12,18 +12,19 @@ import numpy as np
 import torch
 from allennlp.common import FromParams, Params
 from dataclasses import dataclass
+from random import shuffle
 from tensorboardX import SummaryWriter
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
-from close.data.dataset import Dataset
-from close.model.model import Model, BEST_STATE_NAME, BeamSearchSpec
-from close.train.evaluator import Evaluator
-from close.train.optimizer import OptimizerBuilder, TrainingScheduleBuilder
-from close.train.runner import CollateWithBatch
-from close.utils import py_utils, pytorch_utils
-from close.utils.py_utils import dump_json_object
-from close.utils.to_params import to_params
+from l2v.data.dataset import Dataset
+from l2v.model.model import Model, BEST_STATE_NAME, BeamSearchSpec
+from l2v.train.evaluator import Evaluator, ResultKey
+from l2v.train.optimizer import OptimizerBuilder, TrainingScheduleBuilder
+from l2v.train.runner import CollateWithBatch
+from l2v.utils import py_utils, pytorch_utils
+from l2v.utils.py_utils import dump_json_object
+from l2v.utils.to_params import to_params
 
 
 def select_subdir(output_dir, target=None):
@@ -45,7 +46,7 @@ class TrainerSimple(FromParams):
   """Class to run the training loop for our models"""
 
   train_dataset: Dataset
-  """Dataset to train on"""
+  """Datast to train on"""
 
   optimizer: OptimizerBuilder
   """Optimizer to use"""
@@ -84,7 +85,7 @@ class TrainerSimple(FromParams):
   save_each_epoch: Union[int, List[int]] = True
   """Should we save the model each epoch"""
 
-  best_model_key: Optional[str] = None
+  best_model_key: ResultKey = None
   """Keep track of the best model weights using this metrics from `self.evaluator`"""
 
   # Cosmetic/Logging
@@ -171,6 +172,10 @@ class TrainerSimple(FromParams):
       # Not saving anything to disk
       run_dir = None
 
+    MAX_TRAIN_EXAMPLES = 200_000
+    MAX_EVAL_EXAMPLES = 20_000
+
+    device = pytorch_utils.get_device()
     logging.info(f"Initializing model on {device}")
     model.initialize()
     model.to(device)
@@ -180,30 +185,16 @@ class TrainerSimple(FromParams):
     logging.info("Loading training data")
     training_examples = self.train_dataset.load()
     training_examples = py_utils.flatten_list(model.preprocess_example_train(x) for x in training_examples)
-    train_loader = DataLoader(
-      training_examples, self.batch_size,
-      shuffle=True, num_workers=self.num_workers,
-      collate_fn=model.get_collate(True),
-      pin_memory=self.pin_memory,
-    )
 
     if self.eval_dataset is not None:
       assert self.evaluator is not None
       logging.info("Loading eval data")
       eval_examples = self.eval_dataset.load()
-      eval_loader = DataLoader(
-        [model.preprocess_example(x) for x in eval_examples],
-        batch_size=self.batch_size,
-        collate_fn=CollateWithBatch(model.get_collate()),
-        num_workers=self.num_workers,
-        shuffle=False,
-        pin_memory=self.pin_memory
-      )
 
     logging.info("Preparing optimizers")
-    optimizer = self.optimizer.build(model, len(train_loader), self.epochs)
+    optimizer = self.optimizer.build(model, min(len(training_examples), MAX_TRAIN_EXAMPLES), self.epochs)
     if self.scheduler is not None:
-      schedule = self.scheduler.build(optimizer, len(train_loader)*self.epochs, 0)
+      schedule = self.scheduler.build(optimizer, min(len(training_examples), MAX_TRAIN_EXAMPLES)*self.epochs, 0)
     else:
       schedule = None
 
@@ -227,6 +218,13 @@ class TrainerSimple(FromParams):
       model.train()
 
       # tqdm to get a progress bar for the DataLoader
+      shuffle(training_examples)
+      train_loader = DataLoader(
+        training_examples[:MAX_TRAIN_EXAMPLES], self.batch_size,
+        shuffle=True, num_workers=self.num_workers,
+        collate_fn=model.get_collate(True),
+        pin_memory=self.pin_memory,
+      )
       pbar = tqdm(train_loader, disable=not self.epoch_pbar, ncols=100,
                   desc="loss=", total=len(train_loader))
 
@@ -292,14 +290,23 @@ class TrainerSimple(FromParams):
       eval_start = perf_counter()
       model.eval()
       predictions = {}
+      shuffle(eval_examples)
+      eval_loader = DataLoader(
+        [model.preprocess_example(x) for x in eval_examples[:MAX_EVAL_EXAMPLES]],
+        batch_size=self.batch_size,
+        collate_fn=CollateWithBatch(model.get_collate()),
+        num_workers=self.num_workers,
+        shuffle=False,
+        pin_memory=self.pin_memory
+      )
       it = tqdm(eval_loader, desc="eval", ncols=100, disable=not self.eval_pbar)
       for examples, batch in it:
         batch = pytorch_utils.to_device(batch, device)
         with torch.no_grad():
           output = model.predict(**batch)
         for ex, out in zip(examples, output):
-          predictions[ex.example_id] = out
-      results = self.evaluator.evaluate(eval_examples, predictions)
+          predictions[ex.get_example_id()] = out
+      results = self.evaluator.evaluate(eval_examples[:MAX_EVAL_EXAMPLES], predictions)
       eval_end = perf_counter()
       logging.info(f"Evaluation {epoch + 1} took {py_utils.duration_to_str(eval_end - eval_start)}")
 
