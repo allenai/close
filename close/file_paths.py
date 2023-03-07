@@ -8,6 +8,7 @@ COCO_ANNOTATIONS = join(COCO_SOURCE, "annotations")
 COCO_IMAGES = join(COCO_SOURCE, "images")
 
 VQAE = join(DATA_DIR, "vqa-e")
+VISUAL_NEWS = join(DATA_DIR, "visual_news/origin")
 
 SNLI_VE_HOME = join(DATA_DIR, "SNLI_VE")
 FLICKER30K = join(DATA_DIR, "SNLI_VE", "Flickr30K", "flickr30k_images")
