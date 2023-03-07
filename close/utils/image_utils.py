@@ -8,6 +8,7 @@ _IMAGE_ID_TO_SIZE_MAP = {}
 IMAGE_SOURCE_MAP = {
   "coco": file_paths.COCO_IMAGES,
   "flicker30k": file_paths.FLICKER30K,
+  "visual_news": file_paths.VISUAL_NEWS,
 }
 
 
