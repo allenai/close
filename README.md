@@ -47,6 +47,8 @@ by default the files should be put into ~/data/vqa-e
 ### Visual News:
 We use the Visual News dataset, a large corpus consisting of both news images and articles from several news sources. More details can be found [here](https://github.com/FuxiaoLiu/VisualNews-Repository).
 
+Email sophiag[at]allenai[dot]org for trained models on visual news.
+
 ### Adapters 
 The linear and covariance adapters we used in our ablations can be downloaded directly from
 AWS, see `download_adapters` in `coco/close/download.py` 
