@@ -28,26 +28,29 @@ This will download about 45G of data. Data can also be manually downloaded these
 The 2014 train and validation images for [COCO](https://cocodataset.org/#download) should be put in ~/data/coco/images
 The annotations should be saved to ~/data/coco/annotations.
 
+### COCO Captions:
+We use the Karpathy Split found [here](http://cs.stanford.edu/people/karpathy/deepimagesent/caption_datasets.zip)
+The coco_dataset.json file should be put into ~/data/coco.
+
 ### Visual Entailment:
 The data build from [here](https://github.com/necla-ml/SNLI-VE).
 By default the annotations should be in ~/data/SNLI_VE 
 and the images should be in ~/data/SNLI_VE/Flickr30K
 
+### VQA:
+VQA annotation from [here](https://visualqa.org/download.html), which should be saved ~/data/vqa2
+
 ### VQA-E:
 Download the files from [here](https://github.com/liqing-ustc/VQA-E),
 by default the files should be put into ~/data/vqa-e
 
-### COCO Captions:
-We use the Karpathy Split found [here](http://cs.stanford.edu/people/karpathy/deepimagesent/caption_datasets.zip)
-The coco_dataset.json file should be put into ~/data/coco.
+### Visual News:
+We use the Visual News dataset, a large corpus consisting of both news images and articles from several news sources. More details can be found [here](https://github.com/FuxiaoLiu/VisualNews-Repository).
 
 ### Adapters 
 The linear and covariance adapters we used in our ablations can be downloaded directly from
 AWS, see `download_adapters` in `coco/close/download.py` 
 
-
-### VQA:
-VQA annotation from [here](https://visualqa.org/download.html), which should be saved ~/data/vqa2
 
 ## Training
 Training is done with cross/experiments/train.py,
