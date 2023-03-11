@@ -318,7 +318,7 @@ class VisualNewsEvaluator(Evaluator):
 
   def _get_scores(self,  examples: List[VisualNewsExample], predictions: Dict[str, Any]):
     MAX_LOG_EXAMPLES = 0 # adjust this to list more examples
-    MAX_CAPTION_LEN = 1_800
+    MAX_ARTICLE_LEN = 1_800
 
     gts = {}
     res = {}
@@ -331,7 +331,7 @@ class VisualNewsEvaluator(Evaluator):
       if ix < MAX_LOG_EXAMPLES:
         print(f'example id: {instance.example_id}')
         print(f'image id: {instance.image_id}')
-        print(f'news article: {instance.article[:MAX_CAPTION_LEN]}\n')
+        print(f'news article: {instance.article[:MAX_ARTICLE_LEN]}\n')
         print(f'target caption: {gts[key][0]}')
         print(f'predicted caption: {res[key][0]}\n')
 
