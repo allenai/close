@@ -3,9 +3,9 @@ from os.path import isfile, join
 from typing import List
 import numpy as np
 
-from l2v import file_paths
-from l2v.data.dataset import Dataset
-from l2v.utils.py_utils import int_to_str, load_json_object
+from close import file_paths
+from close.data.dataset import Dataset
+from close.utils.py_utils import int_to_str, load_json_object
 
 
 @dataclass

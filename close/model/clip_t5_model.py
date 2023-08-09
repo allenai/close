@@ -15,7 +15,7 @@ from transformers.modeling_outputs import Seq2SeqLMOutput
 
 from close.data.coco_captioning import CaptioningExample
 from close.data.visual_entailment import VisualEntailmentExample
-from l2v.data.visual_news import VisualNewsExample
+from close.data.visual_news import VisualNewsExample
 from close.data.vqa_v2 import VqaExample
 from close.model.layers import Layer
 from close.model.model import Model, ExampleOutput, BeamSearchSpec
@@ -58,11 +58,14 @@ class EmbeddingTokenizer(Layer):
 
 @dataclass
 class TrainingExample:
-  image_id: Optional[str] = None
-  target_text: Union[List[str], None] = None
-  input_text: Optional[str] = None
-  image_text: Union[str, List[str], None] = None
-  example_id: Optional[str] = None
+    image_id: Optional[str] = None
+    target_text: Union[List[str], None] = None
+    input_text: Optional[str] = None
+    image_text: Union[str, List[str], None] = None
+    example_id: Optional[str] = None
+        
+    def get_example_id(self):
+        return self.example_id
 
 
 @dataclass

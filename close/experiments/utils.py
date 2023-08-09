@@ -7,7 +7,7 @@ from close.data.vqa_e import EVQA
 from close.data.vqa_v2 import Vqa2, VqaWithCaptions
 from close.data.visual_entailment import VisualEntailment
 from close.model.language_adapters import *
-from close.train.evaluator import CaptionEvaluator, Evaluator, VqaEvaluator, EntailmentEvaluator
+from close.train.evaluator import CaptionEvaluator, Evaluator, VqaEvaluator
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 

@@ -29,14 +29,17 @@ ANNOTATION_FILE_MAP = {
 
 @dataclass
 class VqaExample:
-  example_id: str
-  question: str
-  image_id: str
-  question_type: str
-  answers: Counter
-  image_text: Union[None, str, List[str]] = None
-  multiple_choice_answer: str = None
-  answer_type: Optional[str] = None
+    example_id: str
+    question: str
+    image_id: str
+    question_type: str
+    answers: Counter
+    image_text: Union[None, str, List[str]] = None
+    multiple_choice_answer: str = None
+    answer_type: Optional[str] = None
+    
+    def get_example_id(self):
+        return self.example_id
 
 
 def _load(q_file, a_file, sample, subset) -> List[VqaExample]:
