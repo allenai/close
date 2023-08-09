@@ -17,7 +17,6 @@ from close.utils import py_utils
 
 from close.model.clip_t5_model import ClipT5Model, EmbeddingTokenizer
 from close.model.model import BeamSearchSpec
-from close.train.evaluator import VqaEvaluator, CaptionEvaluator
 
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
@@ -51,7 +50,7 @@ def main():
   parser.add_argument("--decay", default="linear")
 
   # Other training args
-  parser.add_argument("--batch_size", default=4, type=int)
+  parser.add_argument("--batch_size", default=None, type=int)
   parser.add_argument("--epochs", default=8, type=int)
 
   # Where to save things
