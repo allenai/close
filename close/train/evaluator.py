@@ -77,9 +77,9 @@ class PerExampleEvaluator(Evaluator):
       subset_mapping=None
   ) -> Dict[ResultKey, Number]:
     examples_with_predictions = [x for x in examples if x.get_example_id() in predictions]
-    '''if not allow_partial and (len(examples) != len(examples_with_predictions)):
+    if not allow_partial and (len(examples) != len(examples_with_predictions)):
       raise ValueError(f"Only {len(examples_with_predictions)}/{len(examples)} "
-                       f"of examples have predictions")'''
+                       f"of examples have predictions")
     examples = examples_with_predictions
     per_example_scores = self.evaluate_examples(examples, predictions)
     per_metric_scores = py_utils.transpose_list_of_dicts(per_example_scores)
@@ -345,3 +345,14 @@ class VisualNewsEvaluator(Evaluator):
       else:
         scores[name] = scorer.compute_score(gts, res)
     return scores
+
+@Evaluator.register("entailment-evaluator")
+class EntailmentEvaluator(Evaluator):
+    def evaluate(
+      self,
+      examples: List,
+      predictions: Dict[str, Any],
+      allow_partial=False,
+      subset_mapping=None,
+  ):
+        pass

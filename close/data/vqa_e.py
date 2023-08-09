@@ -27,11 +27,7 @@ class EVQA(Dataset):
     return name
 
   def load(self) -> List:
-    #e_file = join(file_paths.VQAE, f"VQA-E_{self.split}_set.json")
-    if self.split == 'train':  
-        e_file = join(file_paths.VQAE, 'VQA-E_train_set_without_7_most_frequent_words.json')
-    else:
-        e_file = join(file_paths.VQAE, 'VQA-E_val_set_without_7_most_frequent_words.json')
+    e_file = join(file_paths.VQAE, f"VQA-E_{self.split}_set.json")
     logging.info(f"Loading {e_file}")
     with open(e_file) as f:
       data = json.load(f)

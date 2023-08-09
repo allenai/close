@@ -283,6 +283,7 @@ class TrainerSimple(FromParams):
             for j, group in enumerate(optimizer.param_groups):
               name = group.get("name", f"group_{j}")
               summary_writer.add_scalar(f'lr/{name}', group["lr"], global_step)
+        break
 
       ep_end = perf_counter()
       logging.info(f"Epoch {epoch + 1} took {py_utils.duration_to_str(ep_end - ep_start)}, starting evaluation")

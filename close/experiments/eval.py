@@ -108,8 +108,7 @@ def eval_on(args, run_dir, dataset, evaluator, prediction_args, devices, skip_ex
     results = evaluator.evaluate(examples, output)
 
     if output_dir is not None:
-      #results["n"] = len(output)
-      print(results)
+      results["n"] = len(output)
       logging.info(f"Caching evaluation to {output_dir}")
       save_evaluation(output_dir, evaluator, results)
 

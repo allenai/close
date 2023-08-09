@@ -35,7 +35,7 @@ DEFAULT_NOISE = {
 def main():
   parser = argparse.ArgumentParser("Train a CLOSE model")
 
-  parser.add_argument("--data", default="evqa")
+  parser.add_argument("--data", default="vqa-e")
 
   # Model args
   parser.add_argument("--clip_model", default="ViT-L/14")
@@ -51,7 +51,7 @@ def main():
   parser.add_argument("--decay", default="linear")
 
   # Other training args
-  parser.add_argument("--batch_size", default=None, type=int)
+  parser.add_argument("--batch_size", default=4, type=int)
   parser.add_argument("--epochs", default=8, type=int)
 
   # Where to save things
