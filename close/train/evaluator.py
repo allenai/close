@@ -13,13 +13,13 @@ from pycocoevalcap.cider.cider import Cider
 from pycocoevalcap.meteor.meteor import Meteor
 from pycocoevalcap.rouge.rouge import Rouge
 
-from l2v.data.coco_captioning import CaptioningExample
-from l2v.data.visual_news import VisualNewsExample
-from l2v.data.vqa_v2 import VqaExample
-from l2v.eval.vqa_eval import vqa_preprocess
-from l2v.model.model import ExampleOutput
-from l2v.utils import py_utils
-from l2v.utils.quiet_ptbtokenizer import QuitePTBTokenizer
+from close.data.coco_captioning import CaptioningExample
+from close.data.visual_news import VisualNewsExample
+from close.data.vqa_v2 import VqaExample
+from close.eval.vqa_eval import vqa_preprocess
+from close.model.model import ExampleOutput
+from close.utils import py_utils
+from close.utils.quiet_ptbtokenizer import QuitePTBTokenizer
 
 
 class SubmissionFileBuilder(Registrable):
@@ -345,3 +345,14 @@ class VisualNewsEvaluator(Evaluator):
       else:
         scores[name] = scorer.compute_score(gts, res)
     return scores
+
+@Evaluator.register("entailment-evaluator")
+class EntailmentEvaluator(Evaluator):
+    def evaluate(
+      self,
+      examples: List,
+      predictions: Dict[str, Any],
+      allow_partial=False,
+      subset_mapping=None,
+  ):
+        pass

@@ -5,15 +5,15 @@ import torch
 from allennlp.common import Params
 from torch.distributions import multivariate_normal
 
-from l2v import file_paths
-from l2v.model.layers import Layer
-from l2v.utils.py_utils import load_json_object
+from close import file_paths
+from close.model.layers import Layer
+from close.utils.py_utils import load_json_object
 import numpy as np
 
-from l2v.utils.pytorch_utils import replace_parameters
+from close.utils.pytorch_utils import replace_parameters
 
 
-@Layer.register("normalize")
+@Layer.register("normalize-layer")
 class Normalize(Layer):
   def forward(self, x):
     return x / x.norm(dim=-1, keepdim=True)

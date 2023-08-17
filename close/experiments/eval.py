@@ -7,6 +7,11 @@ from typing import Union
 
 import numpy as np
 
+import sys
+
+root_folder = os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+sys.path.append(root_folder)
+
 from close.data.coco_captioning import CocoCaptioningKP
 from close.data.dataset import Dataset
 from close.data.visual_entailment import VisualEntailment

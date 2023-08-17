@@ -17,14 +17,14 @@ from tensorboardX import SummaryWriter
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
-from l2v.data.dataset import Dataset
-from l2v.model.model import Model, BEST_STATE_NAME, BeamSearchSpec
-from l2v.train.evaluator import Evaluator, ResultKey
-from l2v.train.optimizer import OptimizerBuilder, TrainingScheduleBuilder
-from l2v.train.runner import CollateWithBatch
-from l2v.utils import py_utils, pytorch_utils
-from l2v.utils.py_utils import dump_json_object
-from l2v.utils.to_params import to_params
+from close.data.dataset import Dataset
+from close.model.model import Model, BEST_STATE_NAME, BeamSearchSpec
+from close.train.evaluator import Evaluator, ResultKey
+from close.train.optimizer import OptimizerBuilder, TrainingScheduleBuilder
+from close.train.runner import CollateWithBatch
+from close.utils import py_utils, pytorch_utils
+from close.utils.py_utils import dump_json_object
+from close.utils.to_params import to_params
 
 
 def select_subdir(output_dir, target=None):

@@ -1,6 +1,10 @@
 import argparse
 import logging
 import os
+import sys
+
+root_folder = os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+sys.path.append(root_folder)
 
 from close.data.coco_captioning import CocoCaptioningKP
 from close.data.visual_entailment import VisualEntailment
@@ -13,7 +17,6 @@ from close.utils import py_utils
 
 from close.model.clip_t5_model import ClipT5Model, EmbeddingTokenizer
 from close.model.model import BeamSearchSpec
-from close.train.evaluator import VqaEvaluator, EntailmentEvaluator, CaptionEvaluator
 
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
@@ -31,7 +34,7 @@ DEFAULT_NOISE = {
 def main():
   parser = argparse.ArgumentParser("Train a CLOSE model")
 
-  parser.add_argument("--data", default="evqa")
+  parser.add_argument("--data", default="vqa-e")
 
   # Model args
   parser.add_argument("--clip_model", default="ViT-L/14")
