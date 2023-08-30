@@ -1,4 +1,5 @@
-# CLIP Cross-Modality Transfer
+# CLOSE: Cross-modaL transfer On Semantic Embeddings with CLIP
+
 This repository contains the official code for the ICCV 2023 paper:<br>
 [*I can't believe there's no Images!* Learning Visual Tasks Using only Language Supervision](https://arxiv.org/abs/2211.09778)
 
