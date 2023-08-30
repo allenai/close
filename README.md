@@ -1,5 +1,6 @@
 # CLIP Cross-Modality Transfer
-Code for our paper: [*I can't believe there's no Images!* Learning Visual Tasks Using only Language Data](https://arxiv.org/abs/2211.09778).
+This repository contains the official code for the ICCV 2023 paper:<br>
+[*I can't believe there's no Images!* Learning Visual Tasks Using only Language Supervision](https://arxiv.org/abs/2211.09778)
 
 This project trains models on pure-text data and then shows they can applied to the same tasks
 with visual inputs instead of text, thus demonstrating zero-shot cross-modal transfer.
